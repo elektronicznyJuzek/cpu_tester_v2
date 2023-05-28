@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #define MAX_NUMBERS 100
@@ -15,3 +16,7 @@ struct cpu_usage {
     int guest;
     int guest_nice;
 };
+
+void *read_cpu_usage(FILE *file, struct cpu_usage cpu[], int cpu_number);
+
+void test_show(struct cpu_usage cpu[], int cpu_number);
