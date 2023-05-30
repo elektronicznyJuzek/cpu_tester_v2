@@ -24,7 +24,7 @@ struct proc_stat {
 
 struct cpu_data {
     FILE *file;
-    struct proc_stat *cpu;
+    struct proc_stat cpu[9];
     int cpu_number;
 };
 
