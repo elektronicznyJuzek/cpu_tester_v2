@@ -12,7 +12,7 @@
                 "${file}",
                 "-o",
                 "${workspaceFolder}/bin/cpu_usage_app",
-                "${workspaceFolder}/bin/cpu_usage.o"
+                "${workspaceFolder}/bin/proc_stat.o",
             ],
             "options": {
                 "cwd": "${fileDirname}"

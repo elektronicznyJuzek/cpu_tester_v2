@@ -5,12 +5,31 @@ void *read_cpu_usage(void *data)
     char word[] = "cpu";
     char line[MAX_LENGTH];
 
-    struct cpu_data *arg = (struct cpu_data *) data;
+    struct cpu_data *arg = (struct cpu_data *)data;
 
-    printf("Inside read_cpu_usage:\n");
-    printf("data in cpu_usage = %p\n", data);
-    printf("arg in cpu_usage = %p\n", arg);
-    printf("\n");
+    printf("adres struktury data w funkcji: %p\n", data);
+    printf("adres struktury arg w funkcji: %p\n", arg);
+
+    struct proc_stat *cpu_ = NULL;
+
+    cpu_ = (struct proc_stat *)calloc(9, sizeof(struct proc_stat));
+
+    arg->cpu = cpu_;
+    arg->cpu_number = 0;
+    arg->file = fopen("/proc/stat", "r");
+
+    if (arg->file == NULL)
+    {
+        printf("Can't open file /proc/stat.\n");
+        exit(1);
+    }
+
+    while (fgets(line, sizeof(line), arg->file))
+    {
+        printf("%s", line); // Print each line of the file
+    }
+
+    fseek(arg->file, 0, SEEK_SET);
 
     while (fgets(line, sizeof(line), arg->file))
     {
@@ -70,65 +89,50 @@ void *read_cpu_usage(void *data)
         arg->cpu_number++;
     }
 
-    printf("read value user inside read_cpu_usage %p =  %d\n", arg->cpu[0].user, arg->cpu[0].user);
+    //arg->cpu[3].nice = 1234;
 
+    for (int i = 0; i < 9; i++)
+        printf("user[%d] in thread %p = %d\n", i, arg->cpu[i].user, arg->cpu[i].user);
+
+    for (int i = 0; i < 9; i++)
+        printf("nice[%d] in thread %p = %d\n", i, arg->cpu[i].nice, arg->cpu[i].nice);
+
+    for (int i = 0; i < 9; i++)
+        printf("system[%d] in thread %p = %d\n", i, arg->cpu[i].system, arg->cpu[i].system);
+
+    for (int i = 0; i < 9; i++)
+        printf("idle[%d] in thread %p = %d\n", i, arg->cpu[i].idle, arg->cpu[i].idle);
+
+    for (int i = 0; i < 9; i++)
+        printf("iowait[%d] in thread %p = %d\n", i, arg->cpu[i].iowait, arg->cpu[i].iowait);
+
+    for (int i = 0; i < 9; i++)
+        printf("irq[%d] in thread %p = %d\n", i, arg->cpu[i].irq, arg->cpu[i].irq);
+
+    for (int i = 0; i < 9; i++)
+        printf("softirq[%d] in thread %p = %d\n", i, arg->cpu[i].softirq, arg->cpu[i].softirq);
+
+    for (int i = 0; i < 9; i++)
+        printf("steal[%d] in thread %p = %d\n", i, arg->cpu[i].steal, arg->cpu[i].steal);
+
+    for (int i = 0; i < 9; i++)
+        printf("guest[%d] in thread %p = %d\n", i, arg->cpu[i].guest, arg->cpu[i].guest);
+
+    for (int i = 0; i < 9; i++)
+        printf("guest_nice[%d] in thread %p = %d\n", i, arg->cpu[i].guest_nice, arg->cpu[i].guest_nice);
+    // printf("idle[7] in thread = %d\n", arg->cpu[9].idle);
+
+    free(cpu_);
+    fclose(arg->file);
     pthread_exit(NULL);
 }
 
 void *analyze_cpu_usage(void *data)
 {
-
+    pthread_exit(NULL);
 }
 
-// void test_show(struct cpu_usage cpu[], int cpu_number)
-// {
-//     if (cpu[0].user == cpu[1].user + cpu[2].user + cpu[3].user + cpu[4].user + cpu[5].user + cpu[6].user + cpu[7].user + cpu[8].user)
-//         printf("User works\n");
-//     else
-//         printf("User not work: %d != %d\n", cpu[0].user, cpu[1].user + cpu[2].user + cpu[3].user + cpu[4].user + cpu[5].user + cpu[6].user + cpu[7].user + cpu[8].user);
-
-//     if (cpu[0].nice == cpu[1].nice + cpu[2].nice + cpu[3].nice + cpu[4].nice + cpu[5].nice + cpu[6].nice + cpu[7].nice + cpu[8].nice)
-//         printf("Nice works\n");
-//     else
-//         printf("Nice not work: %d != %d\n", cpu[0].nice, cpu[1].nice + cpu[2].nice + cpu[3].nice + cpu[4].nice + cpu[5].nice + cpu[6].nice + cpu[7].nice + cpu[8].nice);
-
-//     if (cpu[0].system == cpu[1].system + cpu[2].system + cpu[3].system + cpu[4].system + cpu[5].system + cpu[6].system + cpu[7].system + cpu[8].system)
-//         printf("System works\n");
-//     else
-//         printf("System not work: %d != %d\n", cpu[0].system, cpu[1].system + cpu[2].system + cpu[3].system + cpu[4].system + cpu[5].system + cpu[6].system + cpu[7].system + cpu[8].system);
-
-//     if (cpu[0].idle == cpu[1].idle + cpu[2].idle + cpu[3].idle + cpu[4].idle + cpu[5].idle + cpu[6].idle + cpu[7].idle + cpu[8].idle)
-//         printf("Idle works\n");
-//     else
-//         printf("Idle not work: %d != %d\n", cpu[0].idle, cpu[1].idle + cpu[2].idle + cpu[3].idle + cpu[4].idle + cpu[5].idle + cpu[6].idle + cpu[7].idle + cpu[8].idle);
-
-//     if (cpu[0].iowait == cpu[1].iowait + cpu[2].iowait + cpu[3].iowait + cpu[4].iowait + cpu[5].iowait + cpu[6].iowait + cpu[7].iowait + cpu[8].iowait)
-//         printf("Iowait works\n");
-//     else
-//         printf("Iowait not work: %d != %d\n", cpu[0].iowait, cpu[1].iowait + cpu[2].iowait + cpu[3].iowait + cpu[4].iowait + cpu[5].iowait + cpu[6].iowait + cpu[7].iowait + cpu[8].iowait);
-
-//     if (cpu[0].irq == cpu[1].irq + cpu[2].irq + cpu[3].irq + cpu[4].irq + cpu[5].irq + cpu[6].irq + cpu[7].irq + cpu[8].irq)
-//         printf("IRQ works\n");
-//     else
-//         printf("IRQ not work: %d != %d\n", cpu[0].irq, cpu[1].irq + cpu[2].irq + cpu[3].irq + cpu[4].irq + cpu[5].irq + cpu[6].irq + cpu[7].irq + cpu[8].irq);
-
-//     if (cpu[0].softirq == cpu[1].softirq + cpu[2].softirq + cpu[3].softirq + cpu[4].softirq + cpu[5].softirq + cpu[6].softirq + cpu[7].softirq + cpu[8].softirq)
-//         printf("SoftIRQ works\n");
-//     else
-//         printf("SoftIRQ not work: %d != %d\n", cpu[0].softirq, cpu[1].softirq + cpu[2].softirq + cpu[3].softirq + cpu[4].softirq + cpu[5].softirq + cpu[6].softirq + cpu[7].softirq + cpu[8].softirq);
-
-//     if (cpu[0].steal == cpu[1].steal + cpu[2].steal + cpu[3].steal + cpu[4].steal + cpu[5].steal + cpu[6].steal + cpu[7].steal + cpu[8].steal)
-//         printf("Steal works\n");
-//     else
-//         printf("Steal not work: %d != %d\n", cpu[0].steal, cpu[1].steal + cpu[2].steal + cpu[3].steal + cpu[4].steal + cpu[5].steal + cpu[6].steal + cpu[7].steal + cpu[8].steal);
-
-//     if (cpu[0].guest == cpu[1].guest + cpu[2].guest + cpu[3].guest + cpu[4].guest + cpu[5].guest + cpu[6].guest + cpu[7].guest + cpu[8].guest)
-//         printf("Guest works\n");
-//     else
-//         printf("Guest not work: %d != %d\n", cpu[0].guest, cpu[1].guest + cpu[2].guest + cpu[3].guest + cpu[4].guest + cpu[5].guest + cpu[6].guest + cpu[7].guest + cpu[8].guest);
-
-//     if (cpu[0].guest_nice == cpu[1].guest_nice + cpu[2].guest_nice + cpu[3].guest_nice + cpu[4].guest_nice + cpu[5].guest_nice + cpu[6].guest_nice + cpu[7].guest_nice + cpu[8].guest_nice)
-//         printf("Guest Nice works\n");
-//     else
-//         printf("Guest Nice not work: %d != %d\n", cpu[0].guest_nice, cpu[1].guest_nice + cpu[2].guest_nice + cpu[3].guest_nice + cpu[4].guest_nice + cpu[5].guest_nice + cpu[6].guest_nice + cpu[7].guest_nice + cpu[8].guest_nice);
-// }
+void *check_data(void *data)
+{
+    pthread_exit(NULL);
+}

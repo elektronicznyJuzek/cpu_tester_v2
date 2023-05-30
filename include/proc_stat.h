@@ -1,3 +1,6 @@
+#ifndef _PROCSTAT_H_
+#define _PROCSTAT_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -30,4 +33,6 @@ void *read_cpu_usage(void *data);
 
 void *analyze_cpu_usage(void *data);
 
-void test_show(struct proc_stat cpu[], int cpu_number);
+void *check_data(void *data);
+
+#endif
